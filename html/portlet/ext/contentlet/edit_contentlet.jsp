@@ -25,6 +25,7 @@
 <%@page import="com.dotmarketing.portlets.htmlpages.model.HTMLPage"%>
 <%@page import="com.dotmarketing.business.Role"%>
 <%@page import="com.dotmarketing.portlets.contentlet.business.ContentletAPI"%>
+<%@page import="com.dotcms.repackage.com.google.gson.Gson"%>
 <!DOCTYPE html>
 <script type='text/javascript' src='/dwr/interface/LanguageAjax.js'></script>
 <!-- ethode tomk: add jquery -->
@@ -32,7 +33,16 @@
 <script> $.noConflict(); </script>
 <script> 
 function getFieldDocumentation(el,s,f) {
-	return jQuery(el).load('/application/structure-info/structure-detail?structName='+s+'&structField='+f);
+	jQuery.ajax({
+		url:'/application/structure-info/structure-detail',
+		method: 'POST',
+		data: JSON.stringify({'structName':s,'structField':f}),
+		success: function (data) {
+			if (data.indexOf('<div class="structure-field-datareturn">') > -1) {
+				jQuery(el).html(data);
+			}
+		}
+	});
 }
 </script>
 <%@ include file="/html/portlet/ext/contentlet/field/edit_file_asset_text_inc.jsp" %>
@@ -301,7 +311,14 @@ var editButtonRow="editContentletButtonRow";
 		<!-- START Right Column -->
 			<div class="wrapperRight" style="position:relative;">
 				<!-- ethode tomk: structure documenation heading -->
-				<div class="contentlet-editor-field-hint" data-structname="<%=structure.getVelocityVarName()%>" data-structfield="editorHeading"></div>
+				<div class="contentlet-editor-field-hint"></div>
+
+				<script>
+					console.log('structure:',<%=new Gson().toJson(structure).toString()%>);
+					console.log('contentlet:',<%=new Gson().toJson(contentlet).toString()%>);
+				</script>
+
+
 				<!--  getFieldDocumentation(this,'<%=structure.getVelocityVarName()%>','editorHeading'); -->
 					<div class="fieldWrapper">&nbsp;</div>
 					<% if(widgetUsageField != null && UtilMethods.isSet(widgetUsageField.getValues())){ %>

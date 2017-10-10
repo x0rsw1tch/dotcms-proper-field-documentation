@@ -27,6 +27,7 @@
 <%@page import="com.dotmarketing.util.Logger"%>
 <%@page import="com.dotmarketing.portlets.structure.business.FieldAPI"%>
 <%@page import="com.dotmarketing.util.VelocityUtil"%>
+<%@page import="com.dotcms.repackage.com.google.gson.Gson"%>
 <%@ include file="/html/portlet/ext/contentlet/init.jsp"%>
 
 <%@page import="com.dotmarketing.portlets.folders.business.FolderAPI"%>
@@ -98,8 +99,26 @@
 			<%=hint%>
 		</div>
 	<%}%>
-	<div class="contentlet-field-hint" data-structname="<%=contentlet.getStructure().getVelocityVarName()%>" data-structfield="<%=field.getVelocityVarName()%>"></div>
+    <div class="contentlet-field-hint">
 
+        <%
+        List<Contentlet> fieldDocumentation = APILocator.getContentletAPI().search("+contentType:StructureDocumentation +StructureDocumentation.docStructureName:"+contentlet.getStructure().getVelocityVarName()+" +StructureDocumentation.docFieldName:"+field.getVelocityVarName()+" +live:true +working:true", 1, 0, "modDate desc", APILocator.getUserAPI().getSystemUser(), false);
+        %>
+	<%
+	if (fieldDocumentation.size() > 0) {
+            for (Contentlet docField : fieldDocumentation) {
+                %>
+                <%=docField.getStringProperty("body")%>
+                <%
+            }
+        }
+        %>
+        <script>
+            console.log('field:',<%=new Gson().toJson(field).toString()%>);
+        </script>
+
+
+    </div>
 
 	<div class="fieldValue" id="<%=field.getVelocityVarName()%>_field">
 <%
