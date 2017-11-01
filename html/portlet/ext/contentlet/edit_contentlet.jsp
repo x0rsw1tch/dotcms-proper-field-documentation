@@ -31,20 +31,6 @@
 <!-- ethode tomk: add jquery -->
 <script src="/js/jquery.min.js"></script>
 <script> $.noConflict(); </script>
-<script> 
-function getFieldDocumentation(el,s,f) {
-	jQuery.ajax({
-		url:'/application/structure-info/structure-detail',
-		method: 'POST',
-		data: JSON.stringify({'structName':s,'structField':f}),
-		success: function (data) {
-			if (data.indexOf('<div class="structure-field-datareturn">') > -1) {
-				jQuery(el).html(data);
-			}
-		}
-	});
-}
-</script>
 <%@ include file="/html/portlet/ext/contentlet/field/edit_file_asset_text_inc.jsp" %>
 
 <style>
@@ -311,7 +297,11 @@ var editButtonRow="editContentletButtonRow";
 		<!-- START Right Column -->
 			<div class="wrapperRight" style="position:relative;">
 				<!-- ethode tomk: structure documenation heading -->
-				<div class="contentlet-editor-field-hint"></div>
+				<div class="contentlet-editor-field-hint">
+					<%
+					List<Contentlet> fieldDocumentation = APILocator.getContentletAPI().search("+contentType:StructureDocumentation +StructureDocumentation.docStructureName:"+contentlet.getStructure().getVelocityVarName()+" +StructureDocumentation.docFieldName:editorHeading"+" +live:true +working:true", 1, 0, "modDate desc", APILocator.getUserAPI().getSystemUser(), false);
+					%>
+				</div>
 
 				<script>
 					console.log('structure:',<%=new Gson().toJson(structure).toString()%>);
