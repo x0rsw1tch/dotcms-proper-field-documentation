@@ -104,15 +104,12 @@
         <%
         List<Contentlet> fieldDocumentation = APILocator.getContentletAPI().search("+contentType:StructureDocumentation +StructureDocumentation.docStructureName:"+contentlet.getStructure().getVelocityVarName()+" +StructureDocumentation.docFieldName:"+field.getVelocityVarName()+" +live:true +working:true", 1, 0, "modDate desc", APILocator.getUserAPI().getSystemUser(), false);
         %>
-	<%
-	if (fieldDocumentation.size() > 0) {
-            for (Contentlet docField : fieldDocumentation) {
-                %>
+        <%
+        if (fieldDocumentation.size() > 0) {
+            for (Contentlet docField : fieldDocumentation) { %>
                 <%=docField.getStringProperty("body")%>
-                <%
-            }
-        }
-        %>
+            <% } 
+        } %>
         <script>
             console.log('field:',<%=new Gson().toJson(field).toString()%>);
         </script>
